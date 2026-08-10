@@ -1,0 +1,20 @@
+{
+  "name": "westfield-aes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run prepare:fonts && npm run prepare:stitch && npm run build:css && node scripts/server.mjs",
+    "build": "npm run prepare:fonts && npm run prepare:stitch && npm run build:css && npm test",
+    "build:css": "tailwindcss -c tailwind.config.cjs -i ./assets/tailwind-input.css -o ./assets/tailwind.css --minify",
+    "prepare:fonts": "node scripts/prepare-fonts.mjs",
+    "prepare:stitch": "node scripts/prepare-html.mjs",
+    "test": "node --check assets/site.js && node scripts/check-site.mjs"
+  },
+  "devDependencies": {
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/martian-mono": "^5.3.0",
+    "@fontsource-variable/mona-sans": "^5.3.0",
+    "tailwindcss": "^3.4.17"
+  }
+}
