@@ -13,23 +13,67 @@ function sharedFooter() {
   const year = new Date().getFullYear();
   return `
 <!-- Shared Site Footer -->
-<footer class="site-footer bg-surface-container-lowest w-full py-16 md:py-20 border-t border-white/5 text-on-surface">
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-    <div class="md:col-span-5">
-      <a class="site-footer__brand font-headline-md text-headline-md font-bold text-on-surface tracking-tight" href="./index.html" aria-label="Westfield AES home">
+<footer class="site-footer">
+  <div class="site-footer__cta shell">
+    <div class="site-footer__cta-meta label">Got something in mind?</div>
+    <a class="site-footer__cta-link" href="./contact.html">
+      Let’s make something useful.
+      <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+  <div class="site-footer__base shell">
+    <div class="site-footer__identity">
+      <a class="site-footer__brand" href="./index.html" aria-label="Westfield AES home">
         <img class="site-footer__logo" src="./assets/westfield-aes-logo.jpeg" alt="Westfield AES Technologies">
       </a>
-      <p class="text-on-surface-variant mt-4 max-w-sm">Built from Africa, Designed for the world.</p>
-      <p class="text-on-surface-variant text-sm mt-8">© ${year} Westfield AES Technologies.</p>
+      <p>Built from Africa.<br>Designed for the world.</p>
     </div>
-    <nav class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap gap-x-8 gap-y-5 md:justify-end md:content-start font-label-sm text-label-sm uppercase tracking-widest" aria-label="Footer navigation">
-      <a class="site-footer__link" href="./about.html">About</a>
+    <nav class="site-footer__nav" aria-label="Footer navigation">
+      <a class="site-footer__link" href="./index.html">Home</a>
+      <a class="site-footer__link" href="./about.html">Studio</a>
+      <a class="site-footer__link" href="./index.html#products">Products</a>
       <a class="site-footer__link" href="./contact.html">Contact</a>
-      <a class="site-footer__link" href="./legal.html#privacy">Privacy Policy</a>
-      <a class="site-footer__link" href="./legal.html#terms">Terms of Service</a>
     </nav>
+    <div class="site-footer__legal">
+      <a href="./legal.html#privacy">Privacy</a>
+      <a href="./legal.html#terms">Terms</a>
+      <span>© ${year} WAES</span>
+    </div>
   </div>
 </footer>`;
+}
+
+function sharedHeader(active) {
+  const current = (page) => active === page ? ' aria-current="page"' : "";
+  return `
+<a class="skip-link" href="#main-content">Skip to content</a>
+<!-- Shared Site Header -->
+<header class="site-header" data-site-header>
+  <div class="site-header__inner shell">
+    <a class="site-header__brand" href="./index.html" aria-label="Westfield AES home">
+      <span class="site-header__monogram" aria-hidden="true">W/A</span>
+      <span>Westfield AES<br>Technologies</span>
+    </a>
+    <nav class="site-header__nav" aria-label="Primary navigation">
+      <a href="./index.html"${current("home")}>Home</a>
+      <a href="./about.html"${current("about")}>Studio</a>
+      <a href="./index.html#products">Products</a>
+      <a href="./contact.html"${current("contact")}>Let’s talk <span aria-hidden="true">↗</span></a>
+    </nav>
+    <button class="site-header__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+      <i aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+    <nav aria-label="Mobile navigation">
+      <a href="./index.html"${current("home")}><span>01</span>Home</a>
+      <a href="./about.html"${current("about")}><span>02</span>Studio</a>
+      <a href="./index.html#products"><span>03</span>Products</a>
+      <a href="./contact.html"${current("contact")}><span>04</span>Let’s talk</a>
+    </nav>
+  </div>
+</header>
+<div class="page-progress" aria-hidden="true"><span data-page-progress></span></div>`;
 }
 
 function replaceSharedChrome(html, active) {
@@ -38,7 +82,7 @@ function replaceSharedChrome(html, active) {
   const mainStart = html.indexOf("<main", bodyContentStart);
 
   if (bodyStart < 0 || bodyContentStart <= bodyStart || mainStart < 0) throw new Error(`Unable to locate page shell in ${active}`);
-  html = `${html.slice(0, bodyContentStart)}\n${html.slice(mainStart)}`;
+  html = `${html.slice(0, bodyContentStart)}\n${sharedHeader(active)}\n${html.slice(mainStart)}`;
 
   const footerStart = html.indexOf("<footer", html.indexOf("<main"));
   const footerEnd = html.indexOf("</footer>", footerStart);
@@ -99,7 +143,6 @@ for (const { file, active } of pages) {
 <link rel="preload" href="./assets/fonts/geist-sans-variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="./assets/fonts/martian-mono-variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="./assets/fonts.css">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <!-- /Local typography -->`;
   html = html.replace("</head>", `${typographyHead}\n</head>`);
   if (!html.includes('src="./assets/site.js"')) {

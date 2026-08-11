@@ -3,65 +3,133 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Privacy & Terms | Westfield AES</title>
   <meta name="description" content="Privacy policy and website terms for Westfield AES Technologies.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta name="theme-color" content="#f2f0e9">
+  <title>Privacy & Terms | Westfield AES Technologies</title>
   <link rel="icon" type="image/png" href="./assets/Westfield AES Logo.png">
   <link rel="stylesheet" href="./assets/tailwind.css">
-<link rel="stylesheet" href="./assets/site.css">
+  <link rel="stylesheet" href="./assets/site.css">
 <!-- Local typography -->
 <link rel="preload" href="./assets/fonts/mona-sans-variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="./assets/fonts/geist-sans-variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="./assets/fonts/martian-mono-variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="./assets/fonts.css">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <!-- /Local typography -->
 </head>
 <body class="legal-page">
-<main class="legal-main" id="main-content">
-    <section class="page-hero page-hero--compact" id="privacy">
-      <div class="page-hero__container">
-        <div class="page-hero__content">
-          <h1 class="page-hero__title">Privacy Policy</h1>
-          <p class="page-hero__lead">How Westfield AES Technologies handles information you intentionally provide when contacting us.</p>
-        </div>
-      </div>
-    </section>
-    <section class="legal-document" aria-label="Privacy policy details">
-      <p>Westfield AES Technologies respects your privacy. This website only collects information you intentionally provide when contacting us, such as your name, email address, company, and message.</p>
-      <h2>How information is used</h2>
-      <p>Information submitted through the contact experience is used to respond to your inquiry, evaluate potential partnerships, and communicate about relevant Westfield AES products or services. We do not sell personal information.</p>
-      <h2>Contact</h2>
-      <p>Questions about privacy can be sent to <a href="mailto:contact@westfieldaes.com">contact@westfieldaes.com</a>.</p>
-    </section>
-    <section class="legal-document" id="terms">
-      <div class="legal-kicker">Legal / Terms</div>
-      <h1>Terms of Service</h1>
-      <p>This website provides general information about Westfield AES Technologies and its products. Content may change as products evolve and does not constitute a binding offer or service-level commitment.</p>
-      <h2>Acceptable use</h2>
-      <p>You may browse and share links to this website for lawful purposes. You may not attempt to disrupt the website, misrepresent Westfield AES materials, or use its content in a way that infringes intellectual-property rights.</p>
-      <h2>Product information</h2>
-      <p>Availability, features, performance claims, and commercial terms are subject to written agreement. Contact us for current product details.</p>
-    </section>
-  </main>
+
+<a class="skip-link" href="#main-content">Skip to content</a>
+<!-- Shared Site Header -->
+<header class="site-header" data-site-header>
+  <div class="site-header__inner shell">
+    <a class="site-header__brand" href="./index.html" aria-label="Westfield AES home">
+      <span class="site-header__monogram" aria-hidden="true">W/A</span>
+      <span>Westfield AES<br>Technologies</span>
+    </a>
+    <nav class="site-header__nav" aria-label="Primary navigation">
+      <a href="./index.html">Home</a>
+      <a href="./about.html">Studio</a>
+      <a href="./index.html#products">Products</a>
+      <a href="./contact.html">Let’s talk <span aria-hidden="true">↗</span></a>
+    </nav>
+    <button class="site-header__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+      <i aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+    <nav aria-label="Mobile navigation">
+      <a href="./index.html"><span>01</span>Home</a>
+      <a href="./about.html"><span>02</span>Studio</a>
+      <a href="./index.html#products"><span>03</span>Products</a>
+      <a href="./contact.html"><span>04</span>Let’s talk</a>
+    </nav>
+  </div>
+</header>
+<div class="page-progress" aria-hidden="true"><span data-page-progress></span></div>
+<main id="main-content" data-page="legal">
+  <section class="legal-hero" aria-labelledby="legal-title">
+    <div class="shell">
+      <div class="legal-hero__meta label" data-reveal><span>Legal / Information</span><span>Last reviewed · August 2026</span></div>
+      <h1 id="legal-title" data-reveal>Clear terms.<br><em>No theatre.</em></h1>
+      <nav class="legal-hero__nav" aria-label="Legal document navigation" data-reveal>
+        <a href="#privacy">Privacy policy <span>01</span></a>
+        <a href="#terms">Terms of service <span>02</span></a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="legal-layout shell">
+    <aside class="legal-aside label">
+      <span>Westfield AES Technologies</span>
+      <span>Information provided in plain language.</span>
+      <a href="mailto:contact@westfieldaes.com">Questions? ↗</a>
+    </aside>
+
+    <div class="legal-documents">
+      <article class="legal-document" id="privacy" data-reveal>
+        <header><span class="label">Document 01</span><h2>Privacy policy</h2></header>
+        <p class="legal-lead">How Westfield AES Technologies handles information you intentionally provide when contacting us.</p>
+        <section>
+          <h3>Information you provide</h3>
+          <p>This website only collects information you intentionally submit, such as your name, email address, company, inquiry type, and message.</p>
+        </section>
+        <section>
+          <h3>How information is used</h3>
+          <p>Submitted information is used to respond to your inquiry, evaluate potential partnerships, and communicate about relevant Westfield AES products or services. We do not sell personal information.</p>
+        </section>
+        <section>
+          <h3>Contact</h3>
+          <p>Questions about privacy can be sent to <a href="mailto:contact@westfieldaes.com">contact@westfieldaes.com</a>.</p>
+        </section>
+      </article>
+
+      <article class="legal-document" id="terms" data-reveal>
+        <header><span class="label">Document 02</span><h2>Terms of service</h2></header>
+        <p class="legal-lead">The practical terms governing use of this informational website.</p>
+        <section>
+          <h3>Website information</h3>
+          <p>This website provides general information about Westfield AES Technologies and its products. Content may change as products evolve and does not constitute a binding offer or service-level commitment.</p>
+        </section>
+        <section>
+          <h3>Acceptable use</h3>
+          <p>You may browse and share links to this website for lawful purposes. You may not attempt to disrupt the website, misrepresent Westfield AES materials, or use its content in a way that infringes intellectual-property rights.</p>
+        </section>
+        <section>
+          <h3>Product information</h3>
+          <p>Availability, features, performance claims, and commercial terms are subject to written agreement. Contact us for current product details.</p>
+        </section>
+      </article>
+    </div>
+  </div>
+</main>
 
 <!-- Shared Site Footer -->
-<footer class="site-footer bg-surface-container-lowest w-full py-16 md:py-20 border-t border-white/5 text-on-surface">
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-    <div class="md:col-span-5">
-      <a class="site-footer__brand font-headline-md text-headline-md font-bold text-on-surface tracking-tight" href="./index.html" aria-label="Westfield AES home">
+<footer class="site-footer">
+  <div class="site-footer__cta shell">
+    <div class="site-footer__cta-meta label">Got something in mind?</div>
+    <a class="site-footer__cta-link" href="./contact.html">
+      Let’s make something useful.
+      <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+  <div class="site-footer__base shell">
+    <div class="site-footer__identity">
+      <a class="site-footer__brand" href="./index.html" aria-label="Westfield AES home">
         <img class="site-footer__logo" src="./assets/westfield-aes-logo.jpeg" alt="Westfield AES Technologies">
       </a>
-      <p class="text-on-surface-variant mt-4 max-w-sm">Built from Africa, Designed for the world.</p>
-      <p class="text-on-surface-variant text-sm mt-8">© 2026 Westfield AES Technologies.</p>
+      <p>Built from Africa.<br>Designed for the world.</p>
     </div>
-    <nav class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap gap-x-8 gap-y-5 md:justify-end md:content-start font-label-sm text-label-sm uppercase tracking-widest" aria-label="Footer navigation">
-      <a class="site-footer__link" href="./about.html">About</a>
+    <nav class="site-footer__nav" aria-label="Footer navigation">
+      <a class="site-footer__link" href="./index.html">Home</a>
+      <a class="site-footer__link" href="./about.html">Studio</a>
+      <a class="site-footer__link" href="./index.html#products">Products</a>
       <a class="site-footer__link" href="./contact.html">Contact</a>
-      <a class="site-footer__link" href="./legal.html#privacy">Privacy Policy</a>
-      <a class="site-footer__link" href="./legal.html#terms">Terms of Service</a>
     </nav>
+    <div class="site-footer__legal">
+      <a href="./legal.html#privacy">Privacy</a>
+      <a href="./legal.html#terms">Terms</a>
+      <span>© 2026 WAES</span>
+    </div>
   </div>
 </footer>
 
@@ -90,32 +158,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <script src="./assets/site.js"></script>
+<script src="./assets/site.js"></script>
 </body>
 </html>
