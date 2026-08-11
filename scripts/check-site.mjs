@@ -45,6 +45,7 @@ for (const page of pages) {
     if ((html.match(/<article class="product\b/g) || []).length !== 3) failures.push(`${page}: product field is incomplete`);
     if (!html.includes('href="https://10trials.vercel.app"')) failures.push(`${page}: 10Trials project route is missing`);
     if (!html.includes("<h3>Atlas</h3>") || !html.includes('src="./assets/atlaslogo.png"')) failures.push(`${page}: Atlas product is incomplete`);
+    if (!html.includes('href="https://atlas57.vercel.app/"')) failures.push(`${page}: Atlas project route is missing`);
     if (html.includes("TerraCrop")) failures.push(`${page}: replaced TerraCrop content remains`);
     if (!html.includes('class="origin"') || !html.includes("Built in Africa")) failures.push(`${page}: origin story is incomplete`);
     if (html.indexOf('id="products"') > html.indexOf('id="capabilities"')) failures.push(`${page}: products should appear before capability claims`);
