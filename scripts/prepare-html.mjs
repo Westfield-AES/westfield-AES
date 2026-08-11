@@ -18,7 +18,7 @@ function sharedFooter() {
     <div class="site-footer__cta-meta label">Got something in mind?</div>
     <a class="site-footer__cta-link" href="./contact.html">
       Let’s make something useful.
-      <span aria-hidden="true">↗</span>
+      <span aria-hidden="true">&#x2197;&#xFE0E;</span>
     </a>
   </div>
   <div class="site-footer__base shell">
@@ -58,7 +58,7 @@ function sharedHeader(active) {
       <a href="./index.html"${current("home")}>Home</a>
       <a href="./about.html"${current("about")}>Studio</a>
       <a href="./index.html#products">Products</a>
-      <a href="./contact.html"${current("contact")}>Let’s talk <span aria-hidden="true">↗</span></a>
+      <a href="./contact.html"${current("contact")}>Let’s talk <span aria-hidden="true">&#x2197;&#xFE0E;</span></a>
     </nav>
     <button class="site-header__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
       <i aria-hidden="true"></i>
