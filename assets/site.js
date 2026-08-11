@@ -1,213 +1,184 @@
-const routes = {
-  about: "./about.html",
-  contact: "./contact.html",
-};
+document.documentElement.classList.add("motion-ready");
 
-const normalize = (value) => value.replace(/\s+/g, " ").trim().toLowerCase();
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-function routeFromLabel(label) {
-  const text = normalize(label);
+function prepareHeader() {
+  const header = document.querySelector("[data-site-header]");
+  const toggle = document.querySelector("[data-menu-toggle]");
+  const menu = document.querySelector("[data-mobile-menu]");
+  if (!header) return;
 
-  if (text === "westfield aes") return "./index.html";
-  if (text === "about") return routes.about;
-  if (text === "contact" || text.includes("talk to us") || text.includes("join the vision")) return routes.contact;
-  if (text.includes("request beta") || text.includes("access platform")) return routes.contact;
-  if (text.includes("architecture")) return routes.contact;
-  if (text.includes("view product") || text.includes("explore platform")) return routes.contact;
-  if (text === "privacy policy") return "./legal.html#privacy";
-  if (text === "terms of service") return "./legal.html#terms";
-  return null;
-}
+  let frame = null;
+  const updateHeader = () => {
+    frame = null;
+    header.classList.toggle("is-scrolled", window.scrollY > 24);
+  };
+  const requestUpdate = () => {
+    if (frame !== null) return;
+    frame = window.requestAnimationFrame(updateHeader);
+  };
 
-function wireRoutes() {
-  document.querySelectorAll("a, button").forEach((element) => {
-    const route = routeFromLabel(element.textContent || "");
-    if (!route) return;
+  updateHeader();
+  window.addEventListener("scroll", requestUpdate, { passive: true });
 
-    if (element.tagName === "A") {
-      if (!element.getAttribute("href") || element.getAttribute("href") === "#") {
-        element.setAttribute("href", route);
-      }
-    } else if (!element.closest("form")) {
-      element.addEventListener("click", () => window.location.assign(route));
+  if (!toggle || !menu) return;
+
+  let closeTimer = null;
+  const closeMenu = () => {
+    window.clearTimeout(closeTimer);
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Open menu");
+    header.classList.remove("is-open");
+    document.body.classList.remove("menu-open");
+    closeTimer = window.setTimeout(() => {
+      menu.hidden = true;
+    }, reducedMotion.matches ? 0 : 420);
+  };
+
+  const openMenu = () => {
+    window.clearTimeout(closeTimer);
+    menu.hidden = false;
+    toggle.setAttribute("aria-expanded", "true");
+    toggle.setAttribute("aria-label", "Close menu");
+    document.body.classList.add("menu-open");
+    window.requestAnimationFrame(() => header.classList.add("is-open"));
+  };
+
+  toggle.addEventListener("click", () => {
+    if (toggle.getAttribute("aria-expanded") === "true") closeMenu();
+    else openMenu();
+  });
+
+  menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+      closeMenu();
+      toggle.focus();
     }
   });
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 767 && toggle.getAttribute("aria-expanded") === "true") closeMenu();
+  });
 }
 
-function prepareHomeEntrance() {
-  const hero = document.querySelector(".home-hero");
-  if (!hero || !Element.prototype.animate || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+function preparePageProgress() {
+  const progress = document.querySelector("[data-page-progress]");
+  if (!progress) return;
 
-  const animations = [];
+  let frame = null;
+  const update = () => {
+    frame = null;
+    const distance = document.documentElement.scrollHeight - window.innerHeight;
+    const value = distance > 0 ? Math.min(1, Math.max(0, window.scrollY / distance)) : 0;
+    progress.style.transform = `scaleX(${value})`;
+  };
+  const requestUpdate = () => {
+    if (frame !== null) return;
+    frame = window.requestAnimationFrame(update);
+  };
 
-  const copyItems = [
-    ".home-hero__title",
-    ".home-hero__lead",
-    ".home-hero__meta",
-  ];
+  update();
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate, { passive: true });
+}
 
-  copyItems.forEach((selector, index) => {
-    const element = hero.querySelector(selector);
-    if (!element) return;
-    const animation = element.animate(
-      [
-        { opacity: 0, transform: "translateY(24px)" },
-        { opacity: 1, transform: "translateY(0)" },
-      ],
-      {
-        duration: 820,
-        delay: 70 + index * 130,
-        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-        fill: "both",
-      },
-    );
-    animation.pause();
-    animation.currentTime = 0;
-    animations.push(animation);
-  });
+function prepareReveals() {
+  const elements = [...document.querySelectorAll("[data-reveal]")];
+  if (!elements.length) return;
 
-  const visual = hero.querySelector(".home-hero__visual");
-  if (visual) {
-    const finalOpacity = getComputedStyle(visual).opacity;
-    const animation = visual.animate(
-      [
-        { opacity: 0, transform: "scale(0.82) rotate(-5deg)", filter: "blur(12px)" },
-        { opacity: finalOpacity, transform: "scale(1) rotate(0)", filter: "blur(0)" },
-      ],
-      {
-        duration: 1500,
-        delay: 160,
-        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-        fill: "both",
-      },
-    );
-    animation.pause();
-    animation.currentTime = 0;
-    animations.push(animation);
-  }
-
-  const grid = hero.querySelector(".home-hero__grid");
-  if (grid) {
-    const animation = grid.animate([{ opacity: 0 }, { opacity: 0.62 }], {
-      duration: 1400,
-      delay: 100,
-      easing: "ease-out",
-      fill: "both",
-    });
-    animation.pause();
-    animation.currentTime = 0;
-    animations.push(animation);
-  }
-
-  if (!("IntersectionObserver" in window)) {
-    animations.forEach((animation) => animation.play());
+  if (reducedMotion.matches || !("IntersectionObserver" in window)) {
+    elements.forEach((element) => element.classList.add("is-visible"));
     return;
   }
-
-  let hasEntered = false;
-  let isHeroVisible = false;
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      const isVisible = entry.isIntersecting && entry.intersectionRatio >= 0.14;
-      if (isVisible === isHeroVisible) return;
-      isHeroVisible = isVisible;
-
-      if (isVisible) {
-        hasEntered = true;
-        animations.forEach((animation) => {
-          animation.playbackRate = 1;
-          animation.play();
-        });
-      } else if (hasEntered) {
-        animations.forEach((animation) => animation.reverse());
-      }
-    },
-    { threshold: [0, 0.14] },
-  );
-
-  observer.observe(hero);
-}
-
-function prepareHomeScrollMotion() {
-  const sections = [...document.querySelectorAll("[data-home-section]")];
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!sections.length || reducedMotion || !("IntersectionObserver" in window)) return;
-
-  document.documentElement.classList.add("home-motion-ready");
 
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        const isVisible = entry.isIntersecting && entry.intersectionRatio >= 0.12;
-        entry.target.classList.toggle("is-visible", isVisible);
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
       });
     },
-    {
-      rootMargin: "0px 0px -8% 0px",
-      threshold: [0, 0.12],
-    },
+    { rootMargin: "0px 0px -9%", threshold: 0.08 },
   );
 
-  sections.forEach((section) => observer.observe(section));
-
-  const depthSection = document.querySelector(".home-global");
-  if (!depthSection) return;
-
-  let animationFrame = null;
-  const updateDepth = () => {
-    animationFrame = null;
-    const bounds = depthSection.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
-
-    if (bounds.bottom < -viewportHeight * 0.25 || bounds.top > viewportHeight * 1.25) return;
-
-    const progress = Math.min(1, Math.max(0, (viewportHeight - bounds.top) / (viewportHeight + bounds.height)));
-    const shift = (0.5 - progress) * 24;
-    depthSection.style.setProperty("--home-depth-shift", `${shift.toFixed(2)}px`);
-  };
-
-  const requestDepthUpdate = () => {
-    if (animationFrame !== null) return;
-    animationFrame = window.requestAnimationFrame(updateDepth);
-  };
-
-  updateDepth();
-  window.addEventListener("scroll", requestDepthUpdate, { passive: true });
-  window.addEventListener("resize", requestDepthUpdate, { passive: true });
+  elements.forEach((element, index) => {
+    element.style.transitionDelay = `${Math.min(index % 4, 3) * 55}ms`;
+    observer.observe(element);
+  });
 }
 
-function prepareContactForm() {
-  const form = document.querySelector("form");
-  if (!form || !document.querySelector("#email")) return;
+function prepareHeroSignal() {
+  const hero = document.querySelector("[data-hero]");
+  const signal = document.querySelector("[data-hero-signal]");
+  if (!hero || !signal || reducedMotion.matches || !window.matchMedia("(pointer: fine)").matches) return;
 
-  const fields = ["name", "company", "email", "subject", "message"];
-  fields.forEach((id) => {
-    const field = document.getElementById(id);
-    if (!field) return;
-    field.name = id;
-    if (["name", "email", "message"].includes(id)) field.required = true;
+  let frame = null;
+  let pointerX = 0;
+  let pointerY = 0;
+  const update = () => {
+    frame = null;
+    const bounds = hero.getBoundingClientRect();
+    const x = ((pointerX - bounds.left) / bounds.width - 0.5) * 18;
+    const y = ((pointerY - bounds.top) / bounds.height - 0.5) * 18;
+    signal.style.setProperty("--signal-x", `${x.toFixed(2)}px`);
+    signal.style.setProperty("--signal-y", `${y.toFixed(2)}px`);
+  };
+
+  hero.addEventListener("pointermove", (event) => {
+    pointerX = event.clientX;
+    pointerY = event.clientY;
+    if (frame === null) frame = window.requestAnimationFrame(update);
+  });
+  hero.addEventListener("pointerleave", () => {
+    signal.style.setProperty("--signal-x", "0px");
+    signal.style.setProperty("--signal-y", "0px");
+  });
+}
+
+function prepareOriginDepth() {
+  const origin = document.querySelector(".origin");
+  if (!origin || reducedMotion.matches) return;
+
+  let frame = null;
+  const update = () => {
+    frame = null;
+    const bounds = origin.getBoundingClientRect();
+    const viewport = window.innerHeight;
+    if (bounds.bottom < 0 || bounds.top > viewport) return;
+    const progress = (viewport - bounds.top) / (viewport + bounds.height);
+    const shift = -9 + Math.min(1, Math.max(0, progress)) * 9;
+    origin.style.setProperty("--origin-shift", `${shift.toFixed(2)}%`);
+  };
+  const requestUpdate = () => {
+    if (frame !== null) return;
+    frame = window.requestAnimationFrame(update);
+  };
+
+  update();
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate, { passive: true });
+}
+
+function prepareProductCards() {
+  const links = [...document.querySelectorAll(".product__link")];
+  if (!links.length) return;
+
+  const releaseProductFocus = () => {
+    const activeElement = document.activeElement;
+    if (activeElement instanceof HTMLElement && activeElement.matches(".product__link")) {
+      activeElement.blur();
+    }
+  };
+
+  links.forEach((link) => {
+    link.addEventListener("click", () => {
+      window.requestAnimationFrame(() => link.blur());
+    });
   });
 
-  const button = form.querySelector("button");
-  if (button) button.type = "submit";
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    if (!form.reportValidity()) return;
-
-    const data = new FormData(form);
-    const subject = document.querySelector("#subject option:checked")?.textContent || "Website inquiry";
-    const body = [
-      `Name: ${data.get("name")}`,
-      `Company: ${data.get("company") || "Not provided"}`,
-      `Email: ${data.get("email")}`,
-      "",
-      data.get("message"),
-    ].join("\n");
-
-    window.location.href = `mailto:contact@westfieldaes.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    showToast("Your email app is opening with the message ready to send.");
-  });
+  window.addEventListener("pagehide", releaseProductFocus);
+  window.addEventListener("pageshow", releaseProductFocus);
 }
 
 function showToast(message) {
@@ -225,23 +196,34 @@ function showToast(message) {
   }, 4200);
 }
 
-function enhancePage() {
-  const main = document.querySelector("main");
-  if (main && !main.id) main.id = "main-content";
+function prepareContactForm() {
+  const form = document.querySelector("[data-contact-form]");
+  if (!form) return;
 
-  const skip = document.createElement("a");
-  skip.className = "skip-link";
-  skip.href = "#main-content";
-  skip.textContent = "Skip to content";
-  document.body.prepend(skip);
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
 
-  document.querySelectorAll("footer").forEach((footer) => {
-    footer.innerHTML = footer.innerHTML.replace(/©\s*2024/g, `© ${new Date().getFullYear()}`);
+    const data = new FormData(form);
+    const subject = String(data.get("subject") || "Website inquiry");
+    const body = [
+      `Name: ${data.get("name")}`,
+      `Company: ${data.get("company") || "Not provided"}`,
+      `Email: ${data.get("email")}`,
+      `Conversation: ${subject}`,
+      "",
+      data.get("message"),
+    ].join("\n");
+
+    window.location.href = `mailto:contact@westfieldaes.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    showToast("Your email app is opening with the project brief ready to send.");
   });
 }
 
-wireRoutes();
-prepareHomeEntrance();
-prepareHomeScrollMotion();
+prepareHeader();
+preparePageProgress();
+prepareReveals();
+prepareHeroSignal();
+prepareOriginDepth();
+prepareProductCards();
 prepareContactForm();
-enhancePage();

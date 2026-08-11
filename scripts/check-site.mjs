@@ -6,10 +6,10 @@ const failures = [];
 const currentYear = new Date().getFullYear();
 const siteCss = await readFile("assets/site.css", "utf8");
 const siteJs = await readFile("assets/site.js", "utf8");
-const expectedHeroVariant = {
-  "about.html": "page-hero--about",
-  "contact.html": "page-hero--contact",
-  "legal.html": "page-hero--compact",
+const expectedHero = {
+  "about.html": "about-intro",
+  "contact.html": "contact-hero",
+  "legal.html": "legal-hero",
 };
 let sharedFooter = null;
 
@@ -26,43 +26,42 @@ for (const page of pages) {
   if (html.includes("lh3.googleusercontent.com")) failures.push(`${page}: remote Stitch image remains`);
   if (html.includes('href="#"')) failures.push(`${page}: unresolved placeholder link`);
 
-  const headers = html.match(/<header class="site-navbar\b[\s\S]*?<\/header>/g) || [];
+  const headers = html.match(/<header class="site-header\b[\s\S]*?<\/header>/g) || [];
   const footers = html.match(/<footer class="site-footer\b[\s\S]*?<\/footer>/g) || [];
-  if (headers.length !== 0) failures.push(`${page}: removed navbar remains`);
+  if (headers.length !== 1) failures.push(`${page}: expected one shared header, found ${headers.length}`);
   if (footers.length !== 1) failures.push(`${page}: expected one shared footer, found ${footers.length}`);
-  if (html.includes("site-navbar") || html.includes("mobile-navigation")) failures.push(`${page}: navbar or mobile navigation markup remains`);
-  if (/>\s*Westfield AES\s*</.test(footers[0] || "")) failures.push(`${page}: brand text remains in shared footer`);
   if (html.includes("site-loader") || html.includes("data-entry-state") || html.includes("waes-entry-seen")) failures.push(`${page}: removed entry loader remains`);
   if (!html.includes('rel="icon" type="image/png" href="./assets/Westfield AES Logo.png"')) failures.push(`${page}: new logo is not the favicon`);
   if (!html.includes('href="./assets/fonts.css"')) failures.push(`${page}: local typography stylesheet is missing`);
-  if (html.includes("family=Inter") || html.includes("JetBrains+Mono")) failures.push(`${page}: legacy web fonts remain`);
+  if (html.includes("fonts.googleapis.com") || html.includes("fonts.gstatic.com")) failures.push(`${page}: remote font dependency remains`);
   if (!html.includes('class="site-footer__logo" src="./assets/westfield-aes-logo.jpeg"')) failures.push(`${page}: footer lockup is not using the JPEG logo`);
-  if (!html.includes(`© ${currentYear} Westfield AES Technologies.`)) failures.push(`${page}: footer year is not current`);
+  if (!html.includes(`© ${currentYear} WAES`)) failures.push(`${page}: footer year is not current`);
   if ((html.match(/class="site-footer__link"/g) || []).length !== 4) failures.push(`${page}: footer navigation is incomplete`);
+  if (!html.includes('data-menu-toggle') || !html.includes('data-mobile-menu')) failures.push(`${page}: responsive navigation is incomplete`);
   if (page === "index.html") {
-    if ((html.match(/<section class="home-hero"/g) || []).length !== 1) failures.push(`${page}: expected one viewport-aware home hero`);
-    if (!html.includes("home-hero__layout") || !html.includes("home-hero__copy")) failures.push(`${page}: brand-first hero structure is missing`);
-    if (!html.includes("Westfield AES technologies") || !html.includes("Africa-rooted product and engineering company")) failures.push(`${page}: hero does not establish the company`);
-    if (!html.includes('class="home-hero__logo" src="./assets/Westfield AES Logo.png"')) failures.push(`${page}: animated hero logo is missing`);
-    if ((html.match(/data-home-section=/g) || []).length !== 3) failures.push(`${page}: expected three scroll-animated content sections`);
-    if ((html.match(/\bhome-sector-card\b/g) || []).length !== 5) failures.push(`${page}: capability card motion sequence is incomplete`);
-    if ((html.match(/class="home-product-card\b/g) || []).length !== 3) failures.push(`${page}: product card motion sequence is incomplete`);
-    const globalSection = html.match(/<section class="[^"]*home-global\b[\s\S]*?<\/section>/)?.[0] || "";
-    if (!globalSection.includes("Have a problem worth solving?") || !globalSection.includes('href="./contact.html"')) failures.push(`${page}: closing invitation is not part of the global section`);
-    if (html.includes("home-cta")) failures.push(`${page}: removed standalone CTA section remains`);
-    if (html.includes("min-h-[921px]")) failures.push(`${page}: legacy fixed hero height remains`);
+    if ((html.match(/<section class="hero"/g) || []).length !== 1) failures.push(`${page}: expected one editorial home hero`);
+    if (!html.includes("hero__title") || !html.includes("data-hero-signal")) failures.push(`${page}: hero composition is incomplete`);
+    if ((html.match(/<article class="cap-card\b/g) || []).length !== 5) failures.push(`${page}: capability field is incomplete`);
+    if ((html.match(/<article class="product\b/g) || []).length !== 3) failures.push(`${page}: product field is incomplete`);
+    if (!html.includes('href="https://10trials.vercel.app"')) failures.push(`${page}: 10Trials project route is missing`);
+    if (!html.includes("<h3>Atlas</h3>") || !html.includes('src="./assets/atlaslogo.png"')) failures.push(`${page}: Atlas product is incomplete`);
+    if (html.includes("TerraCrop")) failures.push(`${page}: replaced TerraCrop content remains`);
+    if (!html.includes('class="origin"') || !html.includes("Built in Africa")) failures.push(`${page}: origin story is incomplete`);
+    if (html.indexOf('id="products"') > html.indexOf('id="capabilities"')) failures.push(`${page}: products should appear before capability claims`);
+    for (const removedCopy of ["Africa / Global", "Applied intelligence / 001", "WAES / SIGNAL 01", "Est. for difficult problems"]) {
+      if (html.includes(removedCopy)) failures.push(`${page}: removed interface copy remains: ${removedCopy}`);
+    }
     for (const route of ["./about.html", "./contact.html"]) {
       if (!html.includes(`href="${route}"`)) failures.push(`${page}: missing homepage route CTA for ${route}`);
     }
   }
-  if (expectedHeroVariant[page]) {
-    if ((html.match(/<section class="page-hero\b/g) || []).length !== 1) failures.push(`${page}: expected one shared page hero`);
-    if (!html.includes(expectedHeroVariant[page])) failures.push(`${page}: incorrect page hero variant`);
-    for (const element of ["page-hero__title", "page-hero__lead"]) {
-      if (!html.includes(element)) failures.push(`${page}: shared page hero is missing ${element}`);
-    }
-    if (html.includes("page-hero__eyebrow")) failures.push(`${page}: removed page hero eyebrow remains`);
+  if (expectedHero[page] && !html.includes(expectedHero[page])) {
+    failures.push(`${page}: redesigned page introduction is missing ${expectedHero[page]}`);
   }
+
+  if (page === "about.html" && (!html.includes("about-manifesto__grid") || !html.includes("method__list"))) failures.push(`${page}: studio narrative is incomplete`);
+  if (page === "contact.html" && (!html.includes("data-contact-form") || !html.includes('id="message"'))) failures.push(`${page}: project brief form is incomplete`);
+  if (page === "legal.html" && (!html.includes('id="privacy"') || !html.includes('id="terms"'))) failures.push(`${page}: legal documents are incomplete`);
 
   if (footers[0]) {
     sharedFooter ??= footers[0];
@@ -81,14 +80,18 @@ for (const page of pages) {
 }
 
 if (!siteJs.includes("IntersectionObserver") || !siteJs.includes("prefers-reduced-motion: reduce")) {
-  failures.push("homepage scroll motion is missing viewport or reduced-motion handling");
+  failures.push("site motion is missing viewport or reduced-motion handling");
 }
-if (!siteJs.includes('classList.toggle("is-visible"') || siteJs.includes("observer.unobserve(entry.target)")) {
-  failures.push("homepage section motion is not configured to reverse and replay");
+if (!siteJs.includes('classList.add("is-visible"') || !siteJs.includes("observer.unobserve(entry.target)")) {
+  failures.push("site reveal motion is not configured as a one-shot entrance");
 }
+if (!siteJs.includes("prepareProductCards") || !siteJs.includes('addEventListener("pageshow"')) {
+  failures.push("product cards do not reset restored link focus");
+}
+if (!siteCss.includes("@media (hover: none)") || !siteCss.includes("@media (prefers-reduced-motion: reduce)")) failures.push("responsive interaction fallbacks are missing");
 
 const assetNames = [
-  "home-education.jpg", "home-agriculture.jpg", "home-climate.jpg", "home-management.jpg",
+  "home-education.jpg", "home-climate.jpg", "home-management.jpg",
   "home-public.jpg", "home-africa.jpg",
   "about-team.jpg",
   "contact-map.jpg",
@@ -105,6 +108,9 @@ for (const font of fontNames) {
   const details = await stat(resolve("assets/fonts", font));
   if (details.size < 10000) failures.push(`${font}: local font file is unexpectedly small`);
 }
+
+const atlasLogo = await stat(resolve("assets/atlaslogo.png"));
+if (atlasLogo.size < 1000) failures.push("atlaslogo.png: product logo is unexpectedly small");
 
 if (failures.length) {
   console.error(failures.join("\n"));
