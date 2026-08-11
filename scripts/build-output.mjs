@@ -5,6 +5,7 @@ const outputDirectory = new URL("../public/", import.meta.url);
 const pages = ["index.html", "about.html", "contact.html", "legal.html"];
 const assetFiles = [
   "10trialslogo.png",
+  "atlaslogo.png",
   "Westfield AES Logo.png",
   "fonts.css",
   "site.css",
