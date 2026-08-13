@@ -6,6 +6,7 @@ const pages = ["index.html", "about.html", "contact.html", "legal.html"];
 const assetFiles = [
   "10trialslogo.png",
   "atlaslogo.png",
+  "studio14logo.png",
   "Westfield AES Logo.png",
   "fonts.css",
   "site.css",
