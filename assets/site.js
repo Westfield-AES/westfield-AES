@@ -215,7 +215,7 @@ function prepareContactForm() {
       data.get("message"),
     ].join("\n");
 
-    window.location.href = `mailto:contact@westfieldaes.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:contact@westfield-aes.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     showToast("Your email app is opening with the project brief ready to send.");
   });
 }
