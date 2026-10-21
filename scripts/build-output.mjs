@@ -7,6 +7,7 @@ const assetFiles = [
   "10trialslogo.png",
   "atlaslogo.png",
   "studio14logo.png",
+  "anzenlogo.png",
   "Westfield AES Logo.png",
   "fonts.css",
   "site.css",
