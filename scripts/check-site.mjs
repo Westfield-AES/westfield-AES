@@ -42,7 +42,7 @@ for (const page of pages) {
     if ((html.match(/<section class="hero"/g) || []).length !== 1) failures.push(`${page}: expected one editorial home hero`);
     if (!html.includes("hero__title") || !html.includes("data-hero-signal")) failures.push(`${page}: hero composition is incomplete`);
     if ((html.match(/<article class="cap-card\b/g) || []).length !== 4) failures.push(`${page}: capability field is incomplete`);
-    if ((html.match(/<article class="product\b/g) || []).length !== 3) failures.push(`${page}: product field is incomplete`);
+    if ((html.match(/<article class="product\b/g) || []).length !== 4) failures.push(`${page}: product field is incomplete`);
     if (!html.includes('href="https://10trials.vercel.app"')) failures.push(`${page}: 10Trials project route is missing`);
     if (!html.includes("<h3>Atlas</h3>") || !html.includes('src="./assets/atlaslogo.png"')) failures.push(`${page}: Atlas product is incomplete`);
     if (!html.includes('href="https://atlas-betai.vercel.app/"')) failures.push(`${page}: Atlas project route is missing`);
