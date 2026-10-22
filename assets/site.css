@@ -1124,6 +1124,10 @@ html.motion-ready [data-reveal].is-visible {
   background: #fff;
 }
 
+.product__visual--anzen {
+  background: #10283f;
+}
+
 .product:hover .product__visual,
 .product:focus-within .product__visual {
   opacity: 1;
